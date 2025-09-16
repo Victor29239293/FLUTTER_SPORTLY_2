@@ -1,5 +1,5 @@
 
-# ⚽ SPORTLY - Tu App de Fútbol en Tiempo Real 📊  
+# ⚽ SPORTLY 2.0 - Tu App de Fútbol en Tiempo Real 📊  
 
 **SPORTLY** es una aplicación móvil desarrollada en **Flutter** que proporciona información detallada sobre ligas de fútbol de todo el mundo, utilizando la API de **football-data.org**. Con una interfaz moderna e intuitiva, permite a los fanáticos del fútbol acceder a estadísticas en tiempo real, resúmenes de partidos y mucho más.  
 
