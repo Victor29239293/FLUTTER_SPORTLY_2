@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_sportly_2/presentation/providers/competition_provider_state.dart';
 
-class InitialScreen extends StatelessWidget {
+class InitialScreen extends ConsumerStatefulWidget {
   static const routeName = '/initial';
   const InitialScreen({super.key});
 
   @override
+  ConsumerState<InitialScreen> createState() => _InitialScreenState();
+}
+
+class _InitialScreenState extends ConsumerState<InitialScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.read(competitionProvider.notifier).loadCompetitions();
+    
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final competitions = ref.watch(competitionProvider);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
@@ -49,31 +66,35 @@ class InitialScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Expanded(
-              child: GridView.builder(
-                physics: const BouncingScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio: 0.85,
-                ),
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return TweenAnimationBuilder(
-                    duration: Duration(milliseconds: 300 + (index * 100)),
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    builder: (context, double value, child) {
-                      return Transform.translate(
-                        offset: Offset(0, 50 * (1 - value)),
-                        child: Opacity(
-                          opacity: value,
-                          child: CompetitionCard(index: index),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+              child:  GridView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16.0,
+                            mainAxisSpacing: 16.0,
+                            childAspectRatio: 0.85,
+                          ),
+                      itemCount: competitions.length,
+                      itemBuilder: (context, index) {
+                        return TweenAnimationBuilder(
+                          duration: Duration(milliseconds: 300 + (index * 100)),
+                          tween: Tween(begin: 0.0, end: 1.0),
+                          builder: (context, double value, child) {
+                            return Transform.translate(
+                              offset: Offset(0, 50 * (1 - value)),
+                              child: Opacity(
+                                opacity: value,
+                                child: CompetitionCard(
+                                  name: competitions[index].name,
+                                  emblemUrl: competitions[index].emblem,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
             ),
           ],
         ),
@@ -83,8 +104,9 @@ class InitialScreen extends StatelessWidget {
 }
 
 class CompetitionCard extends StatefulWidget {
-  final int index;
-  const CompetitionCard({super.key, required this.index});
+  final String name;
+  final String emblemUrl;
+  const CompetitionCard({super.key, required this.name, required this.emblemUrl});
 
   @override
   State<CompetitionCard> createState() => _CompetitionCardState();
@@ -152,7 +174,10 @@ class _CompetitionCardState extends State<CompetitionCard>
                   width: 1.5,
                 ),
               ),
-              child: const CustomCompetition(),
+              child: CustomCompetition(
+                name: widget.name,
+                emblemUrl: widget.emblemUrl,
+              ),
             ),
           ),
         );
@@ -162,7 +187,9 @@ class _CompetitionCardState extends State<CompetitionCard>
 }
 
 class CustomCompetition extends StatelessWidget {
-  const CustomCompetition({super.key});
+  final String name;
+  final String emblemUrl;
+  const CustomCompetition({super.key, required this.name, required this.emblemUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +224,8 @@ class CustomCompetition extends StatelessWidget {
                     colors: [Color(0xFFF8F9FA), Colors.white],
                   ),
                 ),
-                child: Image.network('https://www.nicepng.com/png/detail/1006-10066449_jpg-la-liga-logo-pes-2017.png',
+                child: Image.network(
+                  emblemUrl,
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -227,8 +255,8 @@ class CustomCompetition extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Text(
-              'La Liga',
+            child:  Text(
+              name,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -240,15 +268,7 @@ class CustomCompetition extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Competencia activa',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+         
         ],
       ),
     );

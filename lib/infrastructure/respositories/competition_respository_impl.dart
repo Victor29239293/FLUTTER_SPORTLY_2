@@ -2,9 +2,13 @@
 import '../../domain/domain.dart';
 
 class CompetitionRespositoryImpl implements CompetitionRepositories {
+
+  final CompetitionDatasource datasource;
+
+  CompetitionRespositoryImpl(this.datasource);
+
   @override
   Future<List<CompetitionElement>> getAllCompetitions() async {
-    // TODO: implement getAllCompetitions
-    throw UnimplementedError();
+    return await datasource.getAllCompetitions();
   }
 }

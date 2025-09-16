@@ -1,13 +1,37 @@
 
+class Competition {
+    final int count;
+    final Filters filters;
+    final List<CompetitionResult> competitions;
+
+    Competition({
+        required this.count,
+        required this.filters,
+        required this.competitions,
+    });
+
+    factory Competition.fromJson(Map<String, dynamic> json) => Competition(
+        count: json["count"],
+        filters: Filters.fromJson(json["filters"]),
+        competitions: List<CompetitionResult>.from(json["competitions"].map((x) => CompetitionResult.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "count": count,
+        "filters": filters.toJson(),
+        "competitions": List<dynamic>.from(competitions.map((x) => x.toJson())),
+    };
+}
+
 class CompetitionResult {
     final int id;
-    final Area area;
+    final AreaResult area;
     final String name;
     final String code;
-    final Type type;
+    final TypeResult type;
     final String emblem;
-    final Plan plan;
-    final CurrentSeason currentSeason;
+    final PlanResult plan;
+    final CurrentSeasonResult currentSeason;
     final int numberOfAvailableSeasons;
     final DateTime lastUpdated;
 
@@ -26,13 +50,13 @@ class CompetitionResult {
 
     factory CompetitionResult.fromJson(Map<String, dynamic> json) => CompetitionResult(
         id: json["id"],
-        area: Area.fromJson(json["area"]),
+        area: AreaResult.fromJson(json["area"]),
         name: json["name"],
         code: json["code"],
         type: typeValues.map[json["type"]]!,
         emblem: json["emblem"],
         plan: planValues.map[json["plan"]]!,
-        currentSeason: CurrentSeason.fromJson(json["currentSeason"]),
+        currentSeason: CurrentSeasonResult.fromJson(json["currentSeason"]),
         numberOfAvailableSeasons: json["numberOfAvailableSeasons"],
         lastUpdated: DateTime.parse(json["lastUpdated"]),
     );
@@ -51,20 +75,20 @@ class CompetitionResult {
     };
 }
 
-class Area {
+class AreaResult {
     final int id;
     final String name;
     final String code;
     final String? flag;
 
-    Area({
+    AreaResult({
         required this.id,
         required this.name,
         required this.code,
         required this.flag,
     });
 
-    factory Area.fromJson(Map<String, dynamic> json) => Area(
+    factory AreaResult.fromJson(Map<String, dynamic> json) => AreaResult(
         id: json["id"],
         name: json["name"],
         code: json["code"],
@@ -79,14 +103,14 @@ class Area {
     };
 }
 
-class CurrentSeason {
+class CurrentSeasonResult {
     final int id;
     final DateTime startDate;
     final DateTime endDate;
     final int currentMatchday;
-    final Winner? winner;
+    final WinnerResult? winner;
 
-    CurrentSeason({
+    CurrentSeasonResult({
         required this.id,
         required this.startDate,
         required this.endDate,
@@ -94,12 +118,12 @@ class CurrentSeason {
         required this.winner,
     });
 
-    factory CurrentSeason.fromJson(Map<String, dynamic> json) => CurrentSeason(
+    factory CurrentSeasonResult.fromJson(Map<String, dynamic> json) => CurrentSeasonResult(
         id: json["id"],
         startDate: DateTime.parse(json["startDate"]),
         endDate: DateTime.parse(json["endDate"]),
         currentMatchday: json["currentMatchday"],
-        winner: json["winner"] == null ? null : Winner.fromJson(json["winner"]),
+        winner: json["winner"] == null ? null : WinnerResult.fromJson(json["winner"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -111,7 +135,7 @@ class CurrentSeason {
     };
 }
 
-class Winner {
+class WinnerResult {
     final int id;
     final String name;
     final String shortName;
@@ -124,7 +148,7 @@ class Winner {
     final String venue;
     final DateTime lastUpdated;
 
-    Winner({
+    WinnerResult({
         required this.id,
         required this.name,
         required this.shortName,
@@ -138,7 +162,7 @@ class Winner {
         required this.lastUpdated,
     });
 
-    factory Winner.fromJson(Map<String, dynamic> json) => Winner(
+    factory WinnerResult.fromJson(Map<String, dynamic> json) => WinnerResult(
         id: json["id"],
         name: json["name"],
         shortName: json["shortName"],
@@ -167,24 +191,24 @@ class Winner {
     };
 }
 
-enum Plan {
+enum PlanResult {
     TIER_FOUR,
     TIER_ONE
 }
 
 final planValues = EnumValues({
-    "TIER_FOUR": Plan.TIER_FOUR,
-    "TIER_ONE": Plan.TIER_ONE
+    "TIER_FOUR": PlanResult.TIER_FOUR,
+    "TIER_ONE": PlanResult.TIER_ONE
 });
 
-enum Type {
+enum TypeResult {
     CUP,
     LEAGUE
 }
 
 final typeValues = EnumValues({
-    "CUP": Type.CUP,
-    "LEAGUE": Type.LEAGUE
+    "CUP": TypeResult.CUP,
+    "LEAGUE": TypeResult.LEAGUE
 });
 
 class Filters {
