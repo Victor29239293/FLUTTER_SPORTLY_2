@@ -66,6 +66,8 @@ class CurrentSeason {
   });
 }
 
+
+
 class Winner {
   final int id;
   final String name;
@@ -101,7 +103,5 @@ enum Type { CUP, LEAGUE }
 class Filters {
   final String client;
 
-  Filters({
-    required this.client,
-  });
+  Filters({required this.client});
 }

@@ -11,4 +11,8 @@ class CompetitionRespositoryImpl implements CompetitionRepositories {
   Future<List<CompetitionElement>> getAllCompetitions() async {
     return await datasource.getAllCompetitions();
   }
+  @override
+  Future<CompetitionElement> getCompetitionByCode(String code) async {
+    return await datasource.getCompetitionByCode(code);
+  }
 }

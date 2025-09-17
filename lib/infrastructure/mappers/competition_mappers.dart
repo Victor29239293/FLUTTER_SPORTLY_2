@@ -8,7 +8,7 @@ class CompetitionMapper {
         area: toEntityArea(competition.area),
         name: competition.name,
         code: competition.code,
-        type:toEntityType(competition.type),
+        type: toEntityType(competition.type),
         emblem: competition.emblem,
         plan: toEntityPlan(competition.plan),
         currentSeason: toEntityCurrentSeason(competition.currentSeason),
@@ -19,16 +19,17 @@ class CompetitionMapper {
   static Area toEntityArea(AreaResult area) =>
       Area(id: area.id, name: area.name, code: area.code, flag: area.flag);
 
-  static CurrentSeason toEntityCurrentSeason(CurrentSeasonResult currentSeason) =>
-      CurrentSeason(
-        id: currentSeason.id,
-        startDate: currentSeason.startDate,
-        endDate: currentSeason.endDate,
-        currentMatchday: currentSeason.currentMatchday,
-        winner: currentSeason.winner != null
-            ? toEntityWinner(currentSeason.winner!)
-            : null,
-      );
+  static CurrentSeason toEntityCurrentSeason(
+    CurrentSeasonResult currentSeason,
+  ) => CurrentSeason(
+    id: currentSeason.id,
+    startDate: currentSeason.startDate,
+    endDate: currentSeason.endDate,
+    currentMatchday: currentSeason.currentMatchday,
+    winner: currentSeason.winner != null
+        ? toEntityWinner(currentSeason.winner!)
+        : null,
+  );
 
   static Winner toEntityWinner(WinnerResult winner) => Winner(
     id: winner.id,
@@ -59,8 +60,8 @@ class CompetitionMapper {
         return Plan.TIER_ONE;
       case PlanResult.TIER_FOUR:
         return Plan.TIER_FOUR;
-        
- 
     }
   }
+
+
 }

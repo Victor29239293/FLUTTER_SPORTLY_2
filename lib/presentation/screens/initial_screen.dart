@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sportly_2/presentation/providers/competition_provider_state.dart';
+import 'package:go_router/go_router.dart';
 
 class InitialScreen extends ConsumerStatefulWidget {
   static const routeName = '/initial';
+
   const InitialScreen({super.key});
 
   @override
@@ -16,7 +18,6 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
     // TODO: implement initState
     super.initState();
     ref.read(competitionProvider.notifier).loadCompetitions();
-    
   }
 
   @override
@@ -34,7 +35,7 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ).createShader(bounds),
-          child: const Text(
+          child: Text(
             'SPORTLY',
             style: TextStyle(
               color: Colors.black,
@@ -66,35 +67,35 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
             ),
             const SizedBox(height: 24),
             Expanded(
-              child:  GridView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16.0,
-                            mainAxisSpacing: 16.0,
-                            childAspectRatio: 0.85,
+              child: GridView.builder(
+                physics: const BouncingScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  childAspectRatio: 0.85,
+                ),
+                itemCount: competitions.length,
+                itemBuilder: (context, index) {
+                  return TweenAnimationBuilder(
+                    duration: Duration(milliseconds: 300 + (index * 100)),
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    builder: (context, double value, child) {
+                      return Transform.translate(
+                        offset: Offset(0, 50 * (1 - value)),
+                        child: Opacity(
+                          opacity: value,
+                          child: CompetitionCard(
+                            name: competitions[index].name,
+                            emblemUrl: competitions[index].emblem,
+                            code: competitions[index].code,
                           ),
-                      itemCount: competitions.length,
-                      itemBuilder: (context, index) {
-                        return TweenAnimationBuilder(
-                          duration: Duration(milliseconds: 300 + (index * 100)),
-                          tween: Tween(begin: 0.0, end: 1.0),
-                          builder: (context, double value, child) {
-                            return Transform.translate(
-                              offset: Offset(0, 50 * (1 - value)),
-                              child: Opacity(
-                                opacity: value,
-                                child: CompetitionCard(
-                                  name: competitions[index].name,
-                                  emblemUrl: competitions[index].emblem,
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -106,7 +107,13 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
 class CompetitionCard extends StatefulWidget {
   final String name;
   final String emblemUrl;
-  const CompetitionCard({super.key, required this.name, required this.emblemUrl});
+  final String code;
+  const CompetitionCard({
+    super.key,
+    required this.name,
+    required this.emblemUrl,
+    required this.code,
+  });
 
   @override
   State<CompetitionCard> createState() => _CompetitionCardState();
@@ -139,6 +146,11 @@ class _CompetitionCardState extends State<CompetitionCard>
         return Transform.scale(
           scale: _scaleAnimation.value,
           child: GestureDetector(
+            onTap: () {
+              context.go(
+                '/initial/home/${widget.code}/0',
+              ); // Navigate to HomeView with code
+            },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
@@ -189,7 +201,11 @@ class _CompetitionCardState extends State<CompetitionCard>
 class CustomCompetition extends StatelessWidget {
   final String name;
   final String emblemUrl;
-  const CustomCompetition({super.key, required this.name, required this.emblemUrl});
+  const CustomCompetition({
+    super.key,
+    required this.name,
+    required this.emblemUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +271,7 @@ class CustomCompetition extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child:  Text(
+            child: Text(
               name,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -268,7 +284,6 @@ class CustomCompetition extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-         
         ],
       ),
     );
